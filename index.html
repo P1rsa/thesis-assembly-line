@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Essay Writing Factory</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: #0d0d12;
+    color: #e8e6f0;
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .factory-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .header-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #6b6880;
+    margin-bottom: 10px;
+  }
+
+  .header-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #c8c4f8 0%, #8b85e8 50%, #534AB7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: #6b6880;
+    letter-spacing: 0.08em;
+  }
+
+  /* BELT */
+  .belt-outer {
+    background: #13121a;
+    border: 1px solid #2a2740;
+    border-radius: 20px;
+    padding: 2rem 1.5rem 1.5rem;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+  }
+
+  .belt-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    min-width: 780px;
+  }
+
+  .belt-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #3d3a55;
+  }
+
+  .progress-track {
+    height: 4px;
+    background: #1e1c2e;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    min-width: 780px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #3C3489, #7F77DD, #c8c4f8);
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 0%;
+  }
+
+  .belt-track {
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    min-width: 780px;
+    padding-bottom: 0.5rem;
+  }
+
+  /* STATION */
+  .station-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .station-box {
+    width: 100%;
+    max-width: 88px;
+    border-radius: 10px;
+    border: 1px solid #2a2740;
+    background: #1a1828;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px 7px 8px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .station-block:hover .station-box {
+    transform: translateY(-6px);
+    border-color: #534AB7;
+  }
+
+  .station-box.active {
+    border-color: #7F77DD !important;
+    box-shadow: 0 0 0 2px #534AB740;
+    transform: translateY(-8px);
+  }
+
+  .thesis-station .station-box {
+    border-color: #7F77DD;
+    background: #1a1633;
+  }
+
+  .thesis-station .station-box.active {
+    border-color: #c8c4f8;
+    box-shadow: 0 0 0 3px #534AB760;
+  }
+
+  /* product lines inside box */
+  .product-inner {
+    width: 100%;
+  }
+
+  .pline {
+    height: 3px;
+    border-radius: 2px;
+    margin-bottom: 4px;
+  }
+
+  .quality-badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    display: block;
+    text-align: center;
+  }
+
+  .thesis-crown {
+    font-size: 8px;
+    color: #7F77DD;
+    letter-spacing: 0.14em;
+    text-align: center;
+    margin-bottom: 4px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    animation: crown-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes crown-pulse {
+    0%, 100% { color: #7F77DD; }
+    50% { color: #c8c4f8; }
+  }
+
+  .station-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6b6880;
+    margin-top: 8px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .station-block.thesis-station .station-name {
+    color: #9b97e0;
+  }
+
+  .station-step {
+    font-size: 8px;
+    color: #3d3a55;
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  /* CONNECTOR */
+  .connector {
+    flex: 0 0 16px;
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .connector::before {
+    content: '';
+    display: block;
+    height: 2px;
+    background: #2a2740;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+  }
+
+  .connector::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: calc(50% - 4px);
+    border-left: 6px solid #2a2740;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #5a576e;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .legend-pip {
+    width: 10px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  /* DETAIL PANEL */
+  .detail-panel {
+    border: 1px solid #2a2740;
+    border-radius: 16px;
+    background: #13121a;
+    padding: 1.75rem 2rem;
+    min-height: 140px;
+    transition: border-color 0.3s ease;
+  }
+
+  .detail-panel.thesis-active {
+    border-color: #534AB7;
+  }
+
+  .dp-step {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #4a4766;
+    margin-bottom: 8px;
+  }
+
+  .dp-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #e8e6f0;
+    margin-bottom: 10px;
+  }
+
+  .detail-panel.thesis-active .dp-title {
+    background: linear-gradient(135deg, #c8c4f8, #7F77DD);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dp-body {
+    font-size: 13px;
+    color: #8a87a0;
+    line-height: 1.75;
+  }
+
+  .dp-example {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-left: 2px solid #2a2740;
+    font-size: 12px;
+    color: #5a576e;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .detail-panel.thesis-active .dp-example {
+    border-left-color: #534AB7;
+    color: #9b97e0;
+  }
+
+  /* THESIS UPGRADE CALLOUT */
+  .thesis-upgrade {
+    display: none;
+    margin-top: 1.5rem;
+    border: 1.5px solid #534AB7;
+    border-radius: 16px;
+    background: #1a1633;
+    padding: 2rem 2rem 1.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .thesis-upgrade::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3C3489, #7F77DD, #c8c4f8, #7F77DD, #3C3489);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .upgrade-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7F77DD;
+    margin-bottom: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .upgrade-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 4vw, 30px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #c8c4f8 0%, #7F77DD 60%, #534AB7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+    line-height: 1.15;
+  }
+
+  .upgrade-body {
+    font-size: 14px;
+    color: #8a87a0;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  .upgrade-body strong {
+    color: #c8c4f8;
+    font-weight: 500;
+  }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 5px 13px;
+    border-radius: 30px;
+    background: #26215C;
+    color: #AFA9EC;
+    border: 1px solid #3C3489;
+  }
+
+  /* =========================
+   THESIS GLORY UPGRADE (ADD-ONLY)
+   ========================= */
+
+/* extra aura layer */
+.thesis-station .station-box {
+  position: relative;
+  animation: thesis-breathe 3.8s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(127,119,221,0.25);
+}
+
+/* outer glow field */
+.thesis-station .station-box::before {
+  content: '';
+  position: absolute;
+  inset: -22px;
+  background: radial-gradient(circle,
+    rgba(127,119,221,0.35),
+    rgba(83,74,183,0.15),
+    transparent 70%);
+  filter: blur(16px);
+  opacity: 0.85;
+  z-index: -1;
+  animation: thesis-aura 4.5s ease-in-out infinite;
+}
+
+/* animated energy border */
+.thesis-station .station-box::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(200,196,248,0.9),
+    rgba(127,119,221,1),
+    rgba(83,74,183,0.9),
+    transparent
+  );
+  background-size: 300% 300%;
+  filter: blur(1px);
+  opacity: 0.7;
+  animation: thesis-border-flow 5.5s linear infinite;
+  z-index: -1;
+}
+
+/* stronger active state */
+.thesis-station .station-box.active {
+  transform: translateY(-14px) scale(1.05);
+  box-shadow:
+    0 0 25px rgba(127,119,221,0.5),
+    0 0 70px rgba(83,74,183,0.35),
+    0 0 120px rgba(200,196,248,0.15);
+}
+
+/* crown becomes “alive” */
+.thesis-crown {
+  text-shadow:
+    0 0 10px rgba(127,119,221,0.8),
+    0 0 20px rgba(200,196,248,0.35);
+  animation: crown-pulse 2.2s ease-in-out infinite;
+}
+
+/* subtle line energy */
+.thesis-station .pline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.35),
+    transparent
+  );
+  animation: thesis-sheen 3.4s infinite;
+}
+
+/* KEYFRAMES (ADD-ONLY SAFE) */
+@keyframes thesis-border-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes thesis-aura {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 0.95; }
+}
+
+@keyframes thesis-breathe {
+  0%, 100% { box-shadow: 0 0 12px rgba(127,119,221,0.25); }
+  50% { box-shadow: 0 0 24px rgba(200,196,248,0.4); }
+}
+
+@keyframes crown-pulse {
+  0%, 100% { color: #7F77DD; }
+  50% { color: #c8c4f8; }
+}
+
+@keyframes thesis-sheen {
+  0% { left: -40%; }
+  100% { left: 140%; }
+}
+
+@keyframes thesis-pop {
+  0% { transform: translateY(-8px) scale(1); }
+  50% { transform: translateY(-8px) scale(1.06); }
+  100% { transform: translateY(-8px) scale(1); }
+
+}
+
+/* =========================
+   NON-THESIS DE-EMPHASIS (SAFE VERSION)
+   ========================= */
+
+.station-block:not(.thesis-station) .station-box {
+  opacity: 0.78;
+  filter: saturate(0.85) brightness(0.9);
+  transition: all 0.25s ease;
+}
+
+.station-block:not(.thesis-station):hover .station-box {
+  transform: translateY(-4px) scale(1.01);
+  border-color: #3a3555;
+  box-shadow: none;
+  opacity: 0.88;
+}
+
+.station-block:not(.thesis-station) .station-name {
+  color: #5a576e;
+}
+
+.station-block:not(.thesis-station) .pline {
+  opacity: 0.75;
+  filter: saturate(0.8);
+}
+
+/* IMPORTANT: scope check so it doesn't break if class isn't present */
+.factory-wrap.thesis-focus .station-block:not(.thesis-station) {
+  opacity: 0.55;
+  transform: scale(0.98);
+  filter: blur(0.2px);
+}
+
+/* protect layout integrity */
+.factory-wrap.thesis-focus .thesis-station {
+  z-index: 10;
+}
+</style>
+</head>
+<body>
+<div class="factory-wrap">
+
+  <div class="header">
+    <div class="header-eyebrow">— production line —</div>
+    <div class="header-title">The Essay Writing Factory</div>
+    <div class="header-sub">click any station on the belt to inspect its function</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-pip" style="background:#378ADD;"></div>raw</div>
+    <div class="legend-item"><div class="legend-pip" style="background:#85B7EB;"></div>developing</div>
+    <div class="legend-item"><div class="legend-pip" style="background:#AFA9EC;"></div>refined</div>
+    <div class="legend-item"><div class="legend-pip" style="background:#7F77DD;"></div>polished</div>
+    <div class="legend-item"><div class="legend-pip" style="background:#c8c4f8;"></div>★ thesis upgrade</div>
+  </div>
+
+  <div class="belt-outer">
+    <div class="belt-label-row">
+      <div class="belt-label">→ input</div>
+      <div class="belt-label">production line alpha</div>
+      <div class="belt-label">output ★</div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="belt-track" id="beltTrack"></div>
+  </div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="dp-step" id="dpStep">— select a station —</div>
+    <div class="dp-title" id="dpTitle">Choose a station above</div>
+    <div class="dp-body" id="dpBody">Click any station on the conveyor belt to learn what it contributes to your essay and why it matters.</div>
+    <div class="dp-example" id="dpExample" style="display:none;"></div>
+  </div>
+
+  <div class="thesis-upgrade" id="thesisUpgrade">
+    <div class="upgrade-eyebrow">⬆ major upgrade detected at final station</div>
+    <div class="upgrade-title">Why the Thesis Changes Everything</div>
+    <div class="upgrade-body">
+      A thesis is the <strong>spine of your essay</strong>, without it, every other component is rendered worthless. It transforms a loose collection of observations into a single, arguable claim that gives your reader a reason to <strong>care.</strong><br><br>
+      Every piece of evidence, every literary device, every "so what" moment, every perspective should be directly traceable back to your thesis. It turns a paragraph into a <strong>stance</strong>, and a stance into an essay. It's not just an introduction line — it is the gravitational centre that holds everything together.
+    </div>
+    <div class="pill-row">
+      <div class="pill">gives direction</div>
+      <div class="pill">unifies all points</div>
+      <div class="pill">signals your argument</div>
+      <div class="pill">invites the reader in</div>
+      <div class="pill">separates summary from analysis</div>
+      <div class="pill">makes your essay arguable</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const stations = [
+  {
+    id: 'point',
+    label: 'Point',
+    step: 'step 01 — foundation',
+    boxH: 60,
+    lines: [
+      { w: '85%', color: '#185FA5' },
+      { w: '62%', color: '#0C447C' },
+    ],
+    badge: null, badgeBg: null, badgeColor: null,
+    title: 'Point',
+    body: 'Every strong paragraph opens with a clear, focused point — a single claim that tells your reader exactly what you\'re about to prove. Right now it\'s raw: just a plain assertion sitting on the page, waiting to be built on.',
+    // example: 'e.g. "Macbeth\'s ambition drives him to ruin."'
+  },
+  {
+    id: 'evidence',
+    label: 'Evidence',
+    step: 'step 02 — support added',
+    boxH: 68,
+    lines: [
+      { w: '92%', color: '#378ADD' },
+      { w: '76%', color: '#185FA5' },
+      { w: '55%', color: '#0C447C' },
+    ],
+    badge: 'source attached', badgeBg: '#0C447C', badgeColor: '#B5D4F4',
+    title: 'Evidence',
+    body: 'Now the point gets support. A direct quote, a paraphrase, a scene, a statistic or essentially something real from the text that proves you\'re not just guessing. The product gets thicker and more credible.',
+    // example: 'e.g. "\'I have no spur... but only vaulting ambition\' (I.vii.25–27)"'
+  },
+  {
+    id: 'literary',
+    label: 'Literary Devices',
+    step: 'step 03 — technique layered',
+    boxH: 76,
+    lines: [
+      { w: '94%', color: '#639922' },
+      { w: '82%', color: '#3B6D11' },
+      { w: '65%', color: '#378ADD' },
+      { w: '44%', color: '#185FA5' },
+    ],
+    badge: 'craft identified', badgeBg: '#173404', badgeColor: '#C0DD97',
+    title: 'Literary Devices',
+    body: 'Here the writer identifies craft. Metaphor, imagery, irony, foreshadowing, alliteration, and more. Spotting a device shows you understand how an author builds meaning, not just what they said. The product picks up real texture.',
+    // example: 'e.g. The spur metaphor positions ambition as a riding tool — revealing Macbeth\'s own self-awareness of his fatal flaw.'
+  },
+  {
+    id: 'importance',
+    label: 'Importance',
+    step: 'step 04 — significance unlocked',
+    boxH: 82,
+    lines: [
+      { w: '96%', color: '#BA7517' },
+      { w: '86%', color: '#854F0B' },
+      { w: '72%', color: '#639922' },
+      { w: '56%', color: '#378ADD' },
+    ],
+    badge: 'insight layer', badgeBg: '#412402', badgeColor: '#FAC775',
+    title: 'Importance',
+    body: 'Why does this evidence matter? This is where analysis deepens — connecting the quote to the author\'s purpose, the reader\'s experience, or a broader theme. The product is now visibly more refined and purposeful.',
+    // example: 'e.g. Shakespeare uses this to show Macbeth\'s tragic self-awareness — he recognises his flaw but acts anyway, making his downfall feel inevitable.'
+  },
+  {
+    id: 'perspective',
+    label: 'Perspective',
+    step: 'step 05 — multi-lens view',
+    boxH: 88,
+    lines: [
+      { w: '96%', color: '#D4537E' },
+      { w: '88%', color: '#993556' },
+      { w: '76%', color: '#BA7517' },
+      { w: '62%', color: '#639922' },
+      { w: '44%', color: '#378ADD' },
+    ],
+    badge: 'critical lens applied', badgeBg: '#4B1528', badgeColor: '#F4C0D1',
+    title: 'Perspective',
+    body: 'Bringing in a critical lens — feminist, Marxist, post-colonial, historical context, authorial intent — elevates the essay from surface analysis to genuine critical thinking. The product is now multi-dimensional.',
+    // example: 'e.g. From a Marxist reading, Macbeth\'s ambition critiques unchecked social climbing within feudal power structures.'
+  },
+  {
+    id: 'sowhat',
+    label: 'So What?',
+    step: 'step 06 — meaning connected',
+    boxH: 94,
+    lines: [
+      { w: '97%', color: '#7F77DD' },
+      { w: '90%', color: '#534AB7' },
+      { w: '79%', color: '#D4537E' },
+      { w: '66%', color: '#BA7517' },
+      { w: '50%', color: '#639922' },
+    ],
+    badge: '"so what" resolved', badgeBg: '#26215C', badgeColor: '#CECBF6',
+    title: 'So What?',
+    body: 'The "so what" forces you to zoom out: why does any of this matter beyond the page? What does it reveal about humanity, society, or the reader\'s own world? This is the station where good essays become great essays.',
+    // example: 'e.g. Macbeth\'s fall warns that self-deception is the most dangerous companion to ambition — a truth as resonant in 2025 as in 1606.'
+  },
+  {
+    id: 'conclusion',
+    label: 'Conclusion',
+    step: 'step 07 — loop closed',
+    boxH: 98,
+    lines: [
+      { w: '98%', color: '#534AB7' },
+      { w: '92%', color: '#7F77DD' },
+      { w: '83%', color: '#534AB7' },
+      { w: '72%', color: '#D4537E' },
+      { w: '58%', color: '#BA7517' },
+      { w: '42%', color: '#639922' },
+    ],
+    badge: 'essay sealed', badgeBg: '#26215C', badgeColor: '#AFA9EC',
+    title: 'Conclusion',
+    body: 'The conclusion doesn\'t just restate — it synthesises. It shows the reader how far the argument has travelled and lands on solid, resonant ground. The product is polished, complete... but still waiting for one final, critical addition.',
+    // example: 'Tip: Avoid "In conclusion, I have shown..." — instead, offer a final insight that reframes everything the reader just read.'
+  },
+  {
+    id: 'thesis',
+    label: 'Thesis',
+    step: '★ THESIS — MAJOR UPGRADE',
+    boxH: 118,
+    isThesis: true,
+    lines: [
+      { w: '100%', color: '#c8c4f8' },
+      { w: '96%', color: '#AFA9EC' },
+      { w: '90%', color: '#7F77DD' },
+      { w: '82%', color: '#534AB7' },
+      { w: '72%', color: '#AFA9EC' },
+      { w: '60%', color: '#7F77DD' },
+      { w: '44%', color: '#534AB7' },
+    ],
+    badge: '★ THESIS ★', badgeBg: '#534AB7', badgeColor: '#c8c4f8',
+    title: 'Thesis',
+    body: '',
+    example: ''
+  }
+];
+
+const track = document.getElementById('beltTrack');
+const dpStep = document.getElementById('dpStep');
+const dpTitle = document.getElementById('dpTitle');
+const dpBody = document.getElementById('dpBody');
+const dpExample = document.getElementById('dpExample');
+const detailPanel = document.getElementById('detailPanel');
+const thesisUpgrade = document.getElementById('thesisUpgrade');
+const progressFill = document.getElementById('progressFill');
+
+stations.forEach((s, i) => {
+  if (i > 0) {
+    const conn = document.createElement('div');
+    conn.className = 'connector';
+    track.appendChild(conn);
+  }
+
+  const block = document.createElement('div');
+  block.className = 'station-block' + (s.isThesis ? ' thesis-station' : '');
+  block.dataset.idx = i;
+
+  const box = document.createElement('div');
+  box.className = 'station-box';
+  box.style.height = s.boxH + 'px';
+
+  if (s.isThesis) {
+    const crown = document.createElement('div');
+    crown.className = 'thesis-crown';
+    crown.textContent = '★ THESIS ★';
+    box.appendChild(crown);
+  }
+
+  const inner = document.createElement('div');
+  inner.className = 'product-inner';
+
+  if (s.badge) {
+    const badge = document.createElement('span');
+    badge.className = 'quality-badge';
+    badge.style.background = s.badgeBg;
+    badge.style.color = s.badgeColor;
+    badge.textContent = s.badge;
+    inner.appendChild(badge);
+  }
+
+  s.lines.forEach(l => {
+    const line = document.createElement('div');
+    line.className = 'pline';
+    line.style.width = l.w;
+    line.style.background = l.color;
+    inner.appendChild(line);
+  });
+
+  box.appendChild(inner);
+  block.appendChild(box);
+
+  const name = document.createElement('div');
+  name.className = 'station-name';
+  name.textContent = s.label;
+  block.appendChild(name);
+
+  const step = document.createElement('div');
+  step.className = 'station-step';
+  step.textContent = s.isThesis ? '★' : '0' + (i + 1);
+  block.appendChild(step);
+
+  block.addEventListener('click', () => selectStation(s, block, i));
+  track.appendChild(block);
+});
+
+function selectStation(s, block, idx) {
+  document.querySelectorAll('.station-box').forEach(b => b.classList.remove('active'));
+  block.querySelector('.station-box').classList.add('active');
+
+  const pct = Math.round(((idx + 1) / stations.length) * 100);
+  progressFill.style.width = pct + '%';
+
+  dpStep.textContent = '— ' + s.step + ' —';
+  dpTitle.textContent = s.title;
+
+  if (s.isThesis) {
+  // thesis “activation pulse” (ADD-ONLY)
+  // focus mode ON (makes thesis visually dominate)
+document.querySelector('.factory-wrap').classList.add('thesis-focus');
+const box = block.querySelector('.station-box');
+box.style.animation = 'none';
+void box.offsetWidth; // restart animation
+box.style.animation =
+  'thesis-breathe 3.8s ease-in-out infinite, thesis-pop 0.6s ease-out';
+    dpBody.textContent = 'The thesis is the single biggest upgrade in the entire factory. See the callout below for a full breakdown of why it is so vital.';
+    dpExample.style.display = 'none';
+    detailPanel.classList.add('thesis-active');
+    thesisUpgrade.style.display = 'block';
+    setTimeout(() => thesisUpgrade.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  } else {
+  // focus mode OFF when not thesis
+document.querySelector('.factory-wrap').classList.remove('thesis-focus');
+    dpBody.textContent = s.body;
+    if (s.example) {
+      dpExample.textContent = s.example;
+      dpExample.style.display = 'block';
+    } else {
+      dpExample.style.display = 'none';
+    }
+    detailPanel.classList.remove('thesis-active');
+    thesisUpgrade.style.display = 'none';
+  }
+}
+
+// Default select first station
+setTimeout(() => {
+  const firstBlock = track.querySelector('.station-block');
+  selectStation(stations[0], firstBlock, 0);
+}, 100);
+</script>
+</body>
+</html>
